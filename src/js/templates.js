@@ -1,4 +1,4 @@
-const createTemplate = ({title,description,user,createdAt, id }) => {
+const createTemplate = ({ title, description, user, createdAt, id }) => {
 	const newdate = getTimeAndDate(createdAt)
 	return ` 
 				<div class="todo" id="${id}">
@@ -21,7 +21,7 @@ const createTemplate = ({title,description,user,createdAt, id }) => {
 			 `
 }
 
-const createTemplateInProgress = ({title,description,user,createdAt, id }) => {
+const createTemplateInProgress = ({ title, description, user, createdAt, id }) => {
 	const newdate = getTimeAndDate(createdAt)
 	return ` 
 				<div class="todo inprogress" id="${id}">
@@ -44,8 +44,7 @@ const createTemplateInProgress = ({title,description,user,createdAt, id }) => {
 			 `
 }
 
-
-const createTemplateDone = ({title,description,user,createdAt, id }) => {
+const createTemplateDone = ({ title, description, user, createdAt, id }) => {
 	const newdate = getTimeAndDate(createdAt)
 	return ` 
 				<div class="todo done" id="${id}">
@@ -66,14 +65,39 @@ const createTemplateDone = ({title,description,user,createdAt, id }) => {
 				</div>
 			 `
 }
-function getTimeAndDate(date) {
-	if (typeof (date) == 'string') {
-		date = new Date(date)
-	}
-	let day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate()
-	let month = ((date.getMonth() + 1) < 10) ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-	let year = date.getFullYear()
-	return ` ${day}.${month}.${year}`
+
+
+
+const createTemplatePopUp = ({ title, description, user, id }) => {
+	return `<div id="${id}" class="popup show">
+				<form id="form" action="">
+					<input class="popup__title" type="text" placeholder="Title" text-nowrap value="${title}">
+					<div class="popup__description">
+						<textarea placeholder="Description" name="Description" id="" cols="" rows="">${description}</textarea>
+					</div>
+					<div class="popup__solution">
+						<select name="user" id="select">
+							<option value="${user}">${user}</option>
+							<option value="Павел">Павел</option>
+							<option value="Виктор">Виктор</option>
+							<option value="Дмитрий">Дмитрий</option>
+							<option value="Cергей">Cергей</option>
+						</select>
+						<button class="popup__btn btn-confirm"> Confirm</button>
+					</div>
+				</form>
+				<button class="popup__btn btn-cancel"> Cancel</button>
+			</div> `
 }
 
-export {createTemplate,createTemplateInProgress,createTemplateDone }
+	function getTimeAndDate(date) {
+		if (typeof (date) == 'string') {
+			date = new Date(date)
+		}
+		let day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate()
+		let month = ((date.getMonth() + 1) < 10) ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+		let year = date.getFullYear()
+		return ` ${day}.${month}.${year}`
+	}
+
+	export { createTemplate, createTemplateInProgress, createTemplateDone,createTemplatePopUp }
