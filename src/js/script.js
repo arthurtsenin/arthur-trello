@@ -1,13 +1,23 @@
-import { $, $$ } from './dom-element.js'
+
+import { $ } from './helper.js'
+
 import {
-	createTemplate,
-	createTemplateInProgress,
-	createTemplateDone,
-	createTemplatePopUp
+  createTemplate,
+  createTemplateInProgress,
+  createTemplateDone
 } from './templates.js'
 
-const time = $('.header__time')
-const todoListElement = $('.todo-list')//СПИСОК TODO
+import {
+  userSelectPopUpElement,
+  renderUsers,
+  userSelectPopUpElementEdit,
+  renderUsersEdit
+} from './users.js'
+
+import { Tasks } from './constuctor.js'
+
+const body = $('body')
+const todoListElement = $('.todo-list') // СПИСОК TODO
 const todoListInProgressElement = $('.inprogress-list')// СПИСОК IN PROCESS
 const todoListDoneElement = $('.done-list')// СПИСОК DONE
 
@@ -16,224 +26,260 @@ const todoCounterInProgressElement = $('.board__header-counter2')// ПОДСЧЕ
 const todoCounterDoneElement = $('.board__header-counter3')// ПОДСЧЕТ DONE
 
 const buttonAddCardElement = $('.btn-add')// КНОПКА ДОБАВЕНИЯ TODO
-const deleteAllDoneButtonElement = $('.btn-deleteAll')// КНОПКА УДАЛЕНИЯ ВСЕХ DONE  
+const deleteAllDoneButtonElement = $('.btn-deleteAll')// КНОПКА УДАЛЕНИЯ ВСЕХ DONE
 
 const popUpElement = $('.popup')// МАКЕТ POPUP
-const formElement = $('#form') // ВСЯ ФОРМА POPUP
+const formElement = $('#add') // ВСЯ ФОРМА POPUP
 const todoTitlePopUpElement = $('input')// ЗАГОЛОВОК POPUP
 const todoDescriptionPopUpElement = $('textarea')// ОПИСАНИЕ POPUP
-const userSelectPopUpElement = $('#select')// ВЫБОР ИСПОЛНИТЕЛЯ POPUP
-const buttonCancelPopUpElement = $('.btn-cancel')//КНОПКА ОТМЕНЫ POPUP
+const buttonCancelPopUpElement = $('.btn-cancel')// КНОПКА ОТМЕНЫ POPUP
+
+const formElementEdit = $('#edit') // ВСЯ ФОРМА POPUP EDIT
+const popUpElementEdit = $('.popup__edit')// МАКЕТ POPUP EDIT
+const todoTitlePopUpElementEdit = $('.popup__edit__title')// ЗАГОЛОВОК POPUP EDIT
+const todoDescriptionPopUpElementEdit = $('.textarea__edit')// ОПИСАНИЕ POPUP EDIT
+const buttonCancelPopUpElementEdit = $('.btn-cancel-edit')// КНОПКА ОТМЕНЫ POPUP EDIT
 
 let tasks = []
 let inProgress = []
 let done = []
-//----------------ТЕКУЩЕЕ ВРЕМЯ-----------------------------------------------------------------// ТЕКУЩЕЕ ВРЕМЯ РАБОТАЕТ
-function showTime() {
 
-	let date = new Date()
-	let hours = date.getHours()
-	let hoursOuter = (hours < 10) ? '0' + hours : hours
-	let minutes = date.getMinutes()
-	let minutesOuter = (minutes < 10) ? '0' + minutes : minutes
-	time.innerHTML = `${hoursOuter}:${minutesOuter}`
-}
-setInterval(showTime)
+renderUsers()
+renderUsersEdit()
 
-//----------------ПОЯВЛЕНИЕ ПОПАПА---------------------------------------------------------------// ПОЯВЛЕНИЕ РАБОТАЕТ
+// ----------------ПОЯВЛЕНИЕ ПОПАПА--------------------------------------------// ПОЯВЛЕНИЕ РАБОТАЕТ
 
 function handleClickButtonShowPopUp() {
-	popUpElement.classList.add('show')
+  popUpElement.classList.add('show')
 }
 
 buttonAddCardElement.addEventListener('click', handleClickButtonShowPopUp)
 
-//----------------ОТМЕНА ПОПАПА--------------------------------------------------------------------// ОТМЕНА РАБОТАЕТ
+// ----------------ОТМЕНА ПОПАПА ПО КНОПКЕ-------------------------------------// ОТМЕНА РАБОТАЕТ
 
 function handleClickButtonHidePopUp() {
-	popUpElement.classList.remove('show')
+  popUpElement.classList.remove('show')
 }
 buttonCancelPopUpElement.addEventListener('click', handleClickButtonHidePopUp)
 
-//---------------СОХРАНЕНИЕ ДАННЫХ ИЗ ПОПАПА-------------------------------------------------------// СОХРАНЕНИЕ РАБОТАЕТ
+//----------------ОТМЕНА ПОПАПА ПО ОКНУ БРАУЗЕРА-----------------------------// ОТМЕНА РАБОТАЕТ
+
+function handleClickButtonHidePopUpWindow(event) {
+  if (event.target == body) {
+    popUpElement.classList.remove('show')
+  }
+}
+
+window.addEventListener('click', handleClickButtonHidePopUpWindow)
+
+//---------------СОХРАНЕНИЕ ДАННЫХ ИЗ ПОПАПА----------------------------------// СОХРАНЕНИЕ РАБОТАЕТ
+
 function handleSubmitButtonAddTodo(event) {
-	event.preventDefault()
+  event.preventDefault()
 
-	if ((todoDescriptionPopUpElement.value.trim()) === '' || (todoDescriptionPopUpElement.value.length == 0) || (todoTitlePopUpElement.value.trim()) === '') {
-		alert('Введите все данные')
-	} else {
-		tasks.push(new Tasks(todoTitlePopUpElement.value, todoDescriptionPopUpElement.value, userSelectPopUpElement.value))
-	}
-	formElement.reset()
-
-	handleClickButtonHidePopUp()
-	updateAndAdd()
+  if ((todoDescriptionPopUpElement.value.trim()) === '' || (todoDescriptionPopUpElement.value.length == 0) || (todoTitlePopUpElement.value.trim()) === '') {
+    alert('Введите все данные')
+  } else {
+    tasks.push(new Tasks(todoTitlePopUpElement.value, todoDescriptionPopUpElement.value, userSelectPopUpElement.options[userSelectPopUpElement.selectedIndex].text))
+    handleClickButtonHidePopUp()
+  }
+  updateAndAdd()
+  formElement.reset()
 }
 
 formElement.addEventListener('submit', handleSubmitButtonAddTodo)
 
-
 !localStorage.tasks ? tasks = [] : tasks = JSON.parse(localStorage.getItem('tasks'))
 
-function Tasks(title, description, user) {
-	this.title = title
-	this.description = description
-	this.user = user
-	this.createdAt = new Date()
-	this.id = this.createdAt.getTime()
-}
-
 function render() {
-	todoCounterElement.innerHTML = `${tasks.length}`
-	todoListElement.innerHTML = ''
+  todoCounterElement.innerHTML = `${tasks.length}`
+  todoListElement.innerHTML = ''
 
-	tasks.forEach((item) => {
-		todoListElement.innerHTML += createTemplate(item)
-	});
-
+  tasks.forEach((item) => {
+    todoListElement.innerHTML += createTemplate(item)
+  })
 }
 
 render()
 
 function uptadeLocalStorage() {
-	localStorage.setItem('tasks', JSON.stringify(tasks))
+  localStorage.setItem('tasks', JSON.stringify(tasks))
 }
 
 function updateAndAdd() {
-	uptadeLocalStorage()
-	render()
+  uptadeLocalStorage()
+  render()
 }
 
-//-----------------редактирование тудушек-------------------------------------------------------НЕ РАБОТАЕТ!!!!!!!
+//-----------------редактирование тудушек--------------------------------------------- РАБОТАЕТ
 
 function handleClickButtonEdit(event) {
-	const target = event.target
+  const target = event.target
 
-	if (target.classList.contains('btn-edit')) {
-		const todoElement = target.closest('.todo')
-		const id = todoElement.id
-		tasks.forEach((item, index) => {
-			if (item.id == id) {
-				todoListDoneElement.innerHTML += createTemplatePopUp(item)
-			}
-		})
-	}
+  if (target.classList.contains('btn-edit')) {
+    const todoElement = target.closest('.todo')
+    const id = todoElement.id
+
+    tasks.forEach((item, index) => {
+      if (item.id == id) {
+        tasks.splice(index, 1)
+        updateAndAdd()
+      }
+
+      popUpElementEdit.classList.add('show')
+      todoTitlePopUpElementEdit.setAttribute('value', `${item.title}`)
+      todoDescriptionPopUpElementEdit.innerHTML = `${item.description}`
+      uptadeLocalStorage()
+    })
+    buttonCancelPopUpElementEdit.style.display = "none"
+  }
 }
+
 todoListElement.addEventListener('click', handleClickButtonEdit)
 
-//-------------------------удаление карточки------------------------------
+function handleClickButtonHidePopUpEdit() {
+  popUpElementEdit.classList.remove('show')
+}
+
+buttonCancelPopUpElementEdit.addEventListener('click', handleClickButtonHidePopUpEdit)
+
+function handleSubmitButtonEdit(event) {
+  event.preventDefault()
+  tasks.unshift(new Tasks(todoTitlePopUpElementEdit.value, todoDescriptionPopUpElementEdit.value, userSelectPopUpElementEdit.options[userSelectPopUpElementEdit.selectedIndex].text))
+  formElementEdit.reset()
+
+  handleClickButtonHidePopUpEdit()
+  updateAndAdd()
+}
+
+formElementEdit.addEventListener('submit', handleSubmitButtonEdit)
+
+
+//-------------------------удаление карточки---------------------------------
+
 function handleClickButtonRemove(event) {
-	const target = event.target
+  const target = event.target
 
-	if (target.classList.contains('btn-delete')) {
-		const todoElement = target.closest('.todo')
-		const id = todoElement.id
+  if (target.classList.contains('btn-delete')) {
+    const todoElement = target.closest('.todo')
+    const id = todoElement.id
 
-		tasks.forEach((item, index) => {
-
-			if (item.id == id) {
-				tasks.splice(index, 1)
-				updateAndAdd()
-			}
-		})
-	}
+    tasks.forEach((item, index) => {
+      if (item.id == id) {
+        tasks.splice(index, 1)
+        updateAndAdd()
+      }
+    })
+  }
 }
 todoListElement.addEventListener('click', handleClickButtonRemove)
 
-
 //----------------------переброс в IN PROGRESS-------------------------
+
 !localStorage.inProgress ? inProgress = [] : inProgress = JSON.parse(localStorage.getItem('inProgress'))
 
 function uptadeLocalStorageInProgress() {
-	localStorage.setItem('inProgress', JSON.stringify(inProgress))
+  localStorage.setItem('inProgress', JSON.stringify(inProgress))
 }
 
 function renderInProgress() {
-	todoCounterInProgressElement.innerHTML = `${inProgress.length}`
-	todoListInProgressElement.innerHTML = ''
+  todoCounterInProgressElement.innerHTML = `${inProgress.length}`
+  todoListInProgressElement.innerHTML = ''
 
-	inProgress.forEach((item) => {
-		todoListInProgressElement.innerHTML += createTemplateInProgress(item)
-	});
+  inProgress.forEach((item) => {
+    todoListInProgressElement.innerHTML += createTemplateInProgress(item)
+  });
 }
 
 function updateAndAddInProgress() {
-	renderInProgress()
-	uptadeLocalStorageInProgress()
+  renderInProgress()
+  uptadeLocalStorageInProgress()
 }
 
 function handleClickButtonSolve(event) {
-	const target = event.target
+  const target = event.target
 
-	if (target.classList.contains('btn-solve')) {
-		const todoElement = target.closest('.todo')
-		const id = todoElement.id
+  if (target.classList.contains('btn-solve-progress')) {
+    const todoElement = target.closest('.todo')
+    const id = todoElement.id
 
-		tasks.forEach((item, index) => {
-			if (item.id == id) {
-				tasks.splice(index, 1)
-				inProgress.push(item)
-				updateAndAddInProgress()
-				updateAndAdd()
-			}
-		})
-	}
+    tasks.forEach((item, index) => {
+      if (item.id == id) {
+        tasks.splice(index, 1)
+        inProgress.push(item)
+        updateAndAddInProgress()
+        updateAndAdd()
+      }
+    })
+  }
 }
 
 updateAndAddInProgress()
 
 todoListElement.addEventListener('click', handleClickButtonSolve)
 
-//---------------------------------ОГРАНИЧЕНИЕ в In PROGRESS--------------------------------НЕ РАБОТАЕТ
-// function res() {
+// ------------------------ПЕРЕБРОС ИЗ TODO В DONE
 
-// 	const buttonSolveCardElement = $$('.btn-solve')// КНОПКИ ДОБАВЕНИЯ TODO
-// 	if (inProgress.length > 2) {
-// 		buttonSolveCardElement.forEach(item => item.setAttribute('disabled', ' true'))
-// 	}
-// 	else { buttonSolveCardElement.forEach(item => item.setAttribute('disabled', ' false')) }
-// }
+function handleClickButtonSolveDone(event) {
+  const target = event.target
 
-// res()
+  if (target.classList.contains('btn-solve-done')) {
+    const todoElement = target.closest('.todo')
+    const id = todoElement.id
+
+    tasks.forEach((item, index) => {
+      if (item.id == id) {
+        tasks.splice(index, 1)
+        done.push(item)
+        updateAndAddDone()
+        updateAndAdd()
+      }
+    })
+  }
+}
+
+updateAndAddInProgress()
+
+todoListElement.addEventListener('click', handleClickButtonSolveDone)
+
 //----------------------переброс в DONE-------------------------
 
 !localStorage.done ? done = [] : done = JSON.parse(localStorage.getItem('done'))
 
 function uptadeLocalStorageDone() {
-	localStorage.setItem('done', JSON.stringify(done))
+  localStorage.setItem('done', JSON.stringify(done))
 }
 
 function renderDone() {
-	todoCounterDoneElement.innerHTML = `${done.length}`
-	todoListDoneElement.innerHTML = ''
+  todoCounterDoneElement.innerHTML = `${done.length}`
+  todoListDoneElement.innerHTML = ''
 
-	done.forEach((item) => {
-		todoListDoneElement.innerHTML += createTemplateDone(item)
-
-	});
+  done.forEach((item) => {
+    todoListDoneElement.innerHTML += createTemplateDone(item)
+  })
 }
 
 function updateAndAddDone() {
-	renderDone()
-	uptadeLocalStorageDone()
+  renderDone()
+  uptadeLocalStorageDone()
 }
 
 function handleClickButtonComplete(event) {
-	const target = event.target
+  const target = event.target
 
-	if (target.classList.contains('btn-complete')) {
-		const todoElement = target.closest('.todo')
-		const id = todoElement.id
+  if (target.classList.contains('btn-complete')) {
+    const todoElement = target.closest('.todo')
+    const id = todoElement.id
 
-		inProgress.forEach((item, index) => {
-			if (item.id == id) {
-				inProgress.splice(index, 1)
-				done.push(item)
-				updateAndAddDone()
-				updateAndAddInProgress()
-			}
-		})
-	}
+    inProgress.forEach((item, index) => {
+      if (item.id == id) {
+        inProgress.splice(index, 1)
+        done.push(item)
+        updateAndAddDone()
+        updateAndAddInProgress()
+      }
+    })
+  }
 }
 
 updateAndAddDone()
@@ -243,53 +289,75 @@ todoListInProgressElement.addEventListener('click', handleClickButtonComplete)
 //----------------------------возврат в TODO-------------------------------------------
 
 function handleClickButtonBack(event) {
-	const target = event.target
+  const target = event.target
 
-	if (target.classList.contains('btn-back')) {
-		const todoElement = target.closest('.todo')
-		const id = todoElement.id
+  if (target.classList.contains('btn-back')) {
+    const todoElement = target.closest('.todo')
+    const id = todoElement.id
 
-		inProgress.forEach((item, index) => {
-			if (item.id == id) {
-				inProgress.splice(index, 1)
-				tasks.push(item)
-				updateAndAddInProgress()
-				updateAndAdd()
-			}
-		})
-	}
+    inProgress.forEach((item, index) => {
+      if (item.id == id) {
+        inProgress.splice(index, 1)
+        tasks.push(item)
+        updateAndAddInProgress()
+        updateAndAdd()
+      }
+    })
+  }
 }
 
 todoListInProgressElement.addEventListener('click', handleClickButtonBack)
+
+//----------------------------возврат в IN PROGRESS-------------------------------------------
+
+function handleClickButtonBack2(event) {
+  const target = event.target
+
+  if (target.classList.contains('btn-back')) {
+    const todoElement = target.closest('.todo')
+    const id = todoElement.id
+
+    done.forEach((item, index) => {
+      if (item.id == id) {
+        done.splice(index, 1)
+        inProgress.push(item)
+        updateAndAddDone()
+        updateAndAddInProgress()
+      }
+    })
+  }
+}
+
+todoListDoneElement.addEventListener('click', handleClickButtonBack2)
+
 //-------------------------удаление карточки в DONE------------------------------
+
 function handleClickButtonRemoveDone(event) {
-	const target = event.target
+  const target = event.target
 
-	if (target.classList.contains('btn-delete')) {
-		const todoElement = target.closest('.todo')
-		const id = todoElement.id
+  if (target.classList.contains('btn-delete')) {
+    const todoElement = target.closest('.todo')
+    const id = todoElement.id
 
-		done.forEach((item, index) => {
-
-			if (item.id == id) {
-				done.splice(index, 1)
-				updateAndAddDone()
-			}
-		})
-	}
+    done.forEach((item, index) => {
+      if (item.id == id) {
+        done.splice(index, 1)
+        updateAndAddDone()
+      }
+    })
+  }
 }
 todoListDoneElement.addEventListener('click', handleClickButtonRemoveDone)
 
 //--------------------------УДАЛЕНИЕ ВСЕХ КАРТОЧЕК в DONE ---------------------------------
 
 function handleClickButtonDeleteAllDone() {
-	const warning = confirm('Do you really want delete all completed tasks?')
+  const warning = confirm('Do you really want delete all completed tasks?')
 
-	if (warning) {
-		done = []
-	}
-	updateAndAddDone()
+  if (warning) {
+    done = []
+  }
+  updateAndAddDone()
 }
 
 deleteAllDoneButtonElement.addEventListener('click', handleClickButtonDeleteAllDone)
-

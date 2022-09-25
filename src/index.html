@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,41 +8,77 @@
 	<link rel="stylesheet" href="./sass/style.scss">
 	<title>TRELLO</title>
 </head>
+
 <body>
 	<div class="body__container">
-	<header>
-		<div class="header__logo">TRELLO</div>
-		<div class="header__time">00:00</div>
-	</header>
-	<div class="container">
-		<div class="container__item">
-			<div class="item__head">
-				<div class="item__head-title">TODO</div>
-				<div class="item__head-conter">2</div>
-			</div>
-			<div class="todo-list"></div>
-			<button class="btn btn-add	">ADD TODO</button>
-		</div>
-		<div class="container__item">
-			<div class="item__head">
-				<div class="item__head-title">IN PROGRESS</div>
-				<div class="item__head-conter">1</div>
-			</div>
-			<div class="todo-list"></div>
 
-		</div>
-		<div class="container__item">
-			<div class="item__head">
-				<div class="item__head-title">DONE</div>
-				<div class="item__head-conter">1</div>
+		<header>
+			<div class="header__logo">TRELLO</div>
+			<div class="header__time">00:00</div>
+		</header>
+		<div class="container">
+			<div class="board ">
+				<div class="board__header">
+					<div class="board__header-title">TODO</div>
+					<div class="board__header-counter"></div>
+				</div>
+				<div class="todo-list"></div>
+				<button class="board__btn btn-add">ADD TODO</button>
 			</div>
-			<div class="todo-list"></div>
-			<button class="btn btn-deleteAll">DELETE ALL</button>
+			<div class="board">
+				<div class="board__header inprogress">
+					<div class="board__header-title">IN PROGRESS</div>
+					<div class="board__header-counter2"></div>
+				</div>
+				<div class=" inprogress-list"></div>
+				<div class=" inprogress-list"></div>
+			</div>
+			<div class="board ">
+				<div class="board__header done">
+					<div class="board__header-title ">DONE</div>
+					<div class="board__header-counter3"></div>
+				</div>
+				<div class="done-list"></div>
+				<button class="board__btn btn-deleteAll">DELETE ALL</button>
+			</div>
 		</div>
-
-
 	</div>
-</div>
-<script src="./js/script.js" type="module"></script>	
+	<div class="popup ">
+		<form id="add" action="">
+			<input class="popup__title" type="text" placeholder="Title" text-nowrap>
+			<div class="popup__description">
+				<textarea placeholder="Description" name="Description" id="" cols="" rows=""></textarea>
+			</div>
+			<div class="popup__solution">
+				<select name="popup__users" id="select"></select>
+				<button class="popup__btn btn-confirm"> Confirm</button>
+			</div>
+		</form>
+		<button class="popup__btn btn-cancel"> Cancel</button>
+	</div>
+
+	<div class="popup__edit">
+		<form id="edit" action="">
+			<input class="popup__edit__title" type="text" placeholder="Title" text-nowrap>
+			<div class="popup__edit__description">
+				<textarea class="textarea__edit" placeholder="Description" name="Description" id="" cols="" rows=""></textarea>
+			</div>
+			<div class="popup__edit__solution">
+				<select name="popup__users-edit" id="select-edit"></select>
+				<button class="popup__btn btn-confirm"> Confirm</button>
+			</div>
+		</form>
+		<button class="popup__btn btn-cancel-edit"> Cancel</button>
+	</div>
+
+	<script src="./js/script.js" type="module"></script>
+	<script src="./js/helper.js" type="module"></script>
+	<script src="./js/templates.js" type="module"></script>
+	<script src="./js/users.js" type="module"></script>
+	<script src="./js/clock.js" type="module"></script>
+	<script src="./js/constuctor.js" type="module"></script>
+
+
 </body>
+
 </html>
