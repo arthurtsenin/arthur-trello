@@ -1,83 +1,327 @@
 @import "nulstyle.scss";
-$gray: rgba(153, 153, 153, 0.5);
+
+$gray: rgba(254, 253, 255, 0.226);
 $darkgray: rgba(0, 0, 0, 0.24);
-$green: rgba(19, 238, 12, 0.5);
+$green: rgba(32, 184, 133, 0.781);
 $red: rgba(238, 12, 12, 0.5);
+$blue: rgba(12, 166, 238, 0.63);
+$purple: rgba(254, 253, 255, 0.226);
+$fontcolor: black;
 
 @mixin flex {
 	display: flex;
 	justify-content: space-between;
 }
 
+@mixin border {
+	border-radius: 10px;
+	border: 0px solid $fontcolor;
+	box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.25);
+}
+
 body {
-	background: url(../assets/1.jpeg) fixed no-repeat;
+	background: url(../assets/1.jpg) 0 0 / cover fixed no-repeat;
+	color: $fontcolor;
+
 	.body__container {
 		margin: 0 auto;
-		max-width: 1400px;
+		width: 90%;
 	}
-
 	header {
 		@include flex();
-		margin-top: 20px;
+		@include border();
+		margin: 20px 0;
 		align-items: center;
-		height: 150px;
-		font-size: 3rem;;
-		padding: 15px 30px;
-		background-color: $gray;
-		color: black;
+		font-size: 3rem;
+		padding: 10px 20px;
+		background-color: $purple;
 		border-radius: 10px;
-		margin-bottom: 35px;
 		font-weight: 900;
 		.header__time {
-			border-radius: 10px;
-			border: 2px solid $darkgray;
+			@include border();
 			padding: 15px;
-			background-color: $gray;
+			background-color: rgba(18, 150, 160, 0.699);
 		}
 	}
 	.container {
 		@include flex();
+		@include border();
 		background-color: $gray;
 		border-radius: 10px;
-		&__item {
+		.board {
+			@include flex();
+			flex-direction: column;
+			//@include border();
 			margin: 15px;
-
 			width: 100%;
-			padding: 2 40px;
-			border-radius: 10px;
-			border: 1px solid $darkgray;
+			padding: 5px;
+			&__header {
+				@include flex();
+				align-items: center;
+				@include border();
+				height: 80px;
+				padding: 15px 30px;
+				font-size: 2rem;
+				font-weight: 600;
+				background-color: $green;
+			}
+			.done {
+				background-color: $blue;
+			}
+			.inprogress {
+				background-color: $gray;
+			}
+			.inprogress {
+				background-color: $gray;
+			}
+			&__btn {
+				margin-top: 10px;
+				cursor: pointer;
+				@include border();
+				@include flex();
+				justify-content: center;
+				align-items: center;
+				padding: 15px 30px;
+				font-size: 2rem;
+				font-weight: 600;
+				width: 100%;
+				height: 100px;
+				transition-duration: 5s;
+			}
+			&__btn:hover {
+				position: relative;
+				top: -px;
+			}
+		}
+		.btn-add {
+			background-color: $green;
+		}
+		.btn-deleteAll {
+			background-color: $blue;
+		}
+		.todo-list {
+			flex: 1 1 auto;
+		}
+		.todo {
+			background-color: $green;
+			margin: 10px 0;
+			@include border();
+			padding: 5px;
+			&__buttons {
+				@include flex();
+				justify-content: end;
+				margin-top: 10px;
+			}
+			&__btn {
+				cursor: pointer;
+				@include border();
+				height: 100%;
+				width: 30%;
+				padding: 5px;
+				font-size: 1rem;
+				font-weight: 900;
+				margin: 2px;
+				transition-duration: 5s;
+			}
+			&__btn:hover {
+				position: relative;
+				top: -3px;
+			}
+			&__content {
+				@include flex();
+				margin-top: 20px;
+				font-size: 2rem;
+				font-weight: 600;
+			}
+			&__content-text {
+				@include flex();
+				flex-direction: column;
+				justify-content: space-between;
+			}
+			&__content-title {
+				max-width: 500px;
+				overflow-wrap: break-word;
+			}
+			&__content-description {
+				max-width: 500px;
+				overflow-wrap: break-word;
+			}
+
+			.todo__buttons-progress {
+				@include flex();
+				flex-direction: column;
+				align-items: flex-end;
+			}
+			.btn-solve {
+				@include border();
+				width: 30%;
+				font-size: 1rem;
+				font-weight: 600;
+				margin: 5px;
+			}
+			.btn-solve-done {
+				margin-top: 7px;
+			}
+			&__info {
+				@include flex();
+				margin-top: 20px;
+				padding: 5px;
+				font-size: 1.5rem;
+				font-weight: 900;
+			}
 		}
 	}
-	.item__head {
-		@include flex();
-		align-items: center;
-		border: 1px solid $darkgray;
-		height: 80px;
-		padding: 15px 30px;
-		font-size: 2rem;;
-		font-weight: 600;
+}
+
+.popup {
+	@include border();
+	display: none;
+	padding: 15px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	max-width: 950px;
+	width: 100%;
+	background-color: rgb(8, 156, 131);
+	font-size: 2rem;
+	font-weight: 600;
+	box-shadow: 20px 20px 10px rgba(0, 0, 0, 0.25);
+
+	form {
+		margin: 15px;
 	}
-	.todo-list {
-		@include flex();
-		flex: 1 1 auto;
-	}
-	.btn {
-		cursor: pointer;
-		border-radius: 10px;
-		border: 1px solid $darkgray;
-		height: 100px;
-		@include flex();
-		justify-content: center;
-		align-items: center;
-		padding: 15px 30px;
+	&__title {
+		@include border();
+		width: 50%;
 		font-size: 2rem;
 		font-weight: 600;
+		text-align: center;
+		&::placeholder {
+			padding-top: 70px;
+		}
+	}
+
+	&__solution {
+		margin-top: 15px;
 		width: 100%;
+		@include flex();
+		justify-content: space-between;
 	}
-	.btn-add {
-		background-color: $green;
+	&__description {
+		textarea {
+			margin-top: 15px;
+			@include border();
+			width: 100%;
+			font-size: 2rem;
+			font-weight: 600;
+			text-align: center;
+			height: 200px;
+			resize: none;
+			&::placeholder {
+				padding-top: 70px;
+			}
+		}
 	}
-	.btn-deleteAll {
-		background-color: $red;
+	select {
+		@include border();
+		font-size: 3rem;
+		font-weight: 600;
+		padding: 0px;
+		margin: 0px;
+		max-width: 550px;
 	}
+	&__btn {
+		cursor: pointer;
+		@include border();
+		height: 100%;
+		width: 30%;
+		padding: 5px;
+		font-size: 3rem;
+		font-weight: 600;
+		margin: 2px;
+	}
+	.btn-cancel,.btn-cancel-edit  {
+		position: relative;
+		left: 69%;
+		max-width: 265.8px;
+	}
+}
+
+.popup__edit {
+	@include border();
+	display: none;
+	padding: 15px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	max-width: 950px;
+	width: 100%;
+	background-color: rgb(8, 156, 131);
+	font-size: 2rem;
+	font-weight: 600;
+	box-shadow: 20px 20px 10px rgba(0, 0, 0, 0.25);
+	form {
+		margin: 15px;
+	}
+	&__title {
+		@include border();
+		width: 50%;
+		font-size: 2rem;
+		font-weight: 600;
+		text-align: center;
+		&::placeholder {
+			padding-top: 70px;
+		}
+	}
+
+	&__solution {
+		margin-top: 15px;
+		width: 100%;
+		@include flex();
+		justify-content: space-between;
+	}
+	&__description {
+		textarea {
+			margin-top: 15px;
+			@include border();
+			width: 100%;
+			font-size: 2rem;
+			font-weight: 600;
+			text-align: center;
+			height: 200px;
+			resize: none;
+			&::placeholder {
+				padding-top: 70px;
+			}
+		}
+	}
+	select {
+		@include border();
+		font-size: 3rem;
+		font-weight: 600;
+		padding: 0px;
+		margin: 0px;
+		max-width: 550px;
+	}
+	&__btn {
+		cursor: pointer;
+		@include border();
+		height: 100%;
+		width: 30%;
+		padding: 5px;
+		font-size: 3rem;
+		font-weight: 600;
+		margin: 2px;
+	}
+	.btn-cancel-edit {
+		position: relative;
+		left: 69%;
+		max-width: 265.8px;
+	}
+}
+
+.show {
+	display: block;
 }

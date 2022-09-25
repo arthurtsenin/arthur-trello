@@ -20,6 +20,11 @@
   },
   "homepage": "https://github.com/arthurtsenin/arthur-trello#readme",
   "devDependencies": {
+    "eslint": "^8.18.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.3",
+    "eslint-plugin-promise": "^6.0.0",
     "parcel-bundler": "^1.12.5",
     "sass": "^1.52.2"
   }

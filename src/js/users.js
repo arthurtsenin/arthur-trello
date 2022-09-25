@@ -13,7 +13,7 @@ async function fetchUsers() {
 async function renderUsers() {
 	await fetchUsers()
 	usersSelect.forEach(user => {
-		userSelectPopUpElement.innerHTML += `<option value=${user.id}>${user.name}</option>`
+		userSelectPopUpElement.innerHTML += `<option value="${user.id}">${user.name}</option>`
 	})
 }
 
@@ -28,7 +28,7 @@ async function fetchUsersEdit() {
 async function renderUsersEdit() {
 	await fetchUsersEdit()
 	usersSelectEdit.forEach(user => {
-		userSelectPopUpElementEdit.innerHTML += `<option value=${user.id}>${user.name}</option>`
+		userSelectPopUpElementEdit.innerHTML += `<option value="${user.id}">${user.name}</option>`
 	})
 }
 

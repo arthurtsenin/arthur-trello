@@ -2,12 +2,12 @@ import { $ } from './helper.js'
 
 const time = $('.header__time')
 
-function showTime() {
-	let date = new Date()
-	let hours = date.getHours()
-	let hoursOuter = (hours < 10) ? '0' + hours : hours
-	let minutes = date.getMinutes()
-	let minutesOuter = (minutes < 10) ? '0' + minutes : minutes
+function showTime () {
+	const date = new Date()
+	const hours = date.getHours()
+	const hoursOuter = (hours < 10) ? '0' + hours : hours
+	const minutes = date.getMinutes()
+	const minutesOuter = (minutes < 10) ? '0' + minutes : minutes
 	time.innerHTML = `${hoursOuter}:${minutesOuter}`
 }
 

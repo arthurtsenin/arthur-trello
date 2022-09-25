@@ -47,7 +47,7 @@ let done = []
 renderUsers()
 renderUsersEdit()
 
-//----------------ПОЯВЛЕНИЕ ПОПАПА--------------------------------------------// ПОЯВЛЕНИЕ РАБОТАЕТ
+// ----------------ПОЯВЛЕНИЕ ПОПАПА--------------------------------------------// ПОЯВЛЕНИЕ РАБОТАЕТ
 
 function handleClickButtonShowPopUp() {
   popUpElement.classList.add('show')
@@ -55,7 +55,7 @@ function handleClickButtonShowPopUp() {
 
 buttonAddCardElement.addEventListener('click', handleClickButtonShowPopUp)
 
-//----------------ОТМЕНА ПОПАПА ПО КНОПКЕ-------------------------------------// ОТМЕНА РАБОТАЕТ
+// ----------------ОТМЕНА ПОПАПА ПО КНОПКЕ-------------------------------------// ОТМЕНА РАБОТАЕТ
 
 function handleClickButtonHidePopUp() {
   popUpElement.classList.remove('show')

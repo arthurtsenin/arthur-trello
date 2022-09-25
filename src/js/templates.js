@@ -70,7 +70,7 @@ const createTemplateDone = ({ title, description, user, createdAt, id }) => {
           `
 }
 
-function getTimeAndDate(date) {
+function getTimeAndDate (date) {
    if (typeof (date) == 'string') {
       date = new Date(date)
    }
